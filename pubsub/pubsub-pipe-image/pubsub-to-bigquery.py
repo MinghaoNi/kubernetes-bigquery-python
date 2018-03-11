@@ -84,7 +84,7 @@ def pull_messages(client, project_name, sub_name):
     return tweets
 
 
-def write_to_bq(pubsub, sub_name, bigquery):
+def write_to_bq(language, pubsub, sub_name, bigquery):
     """Write the data to BigQuery in small chunks."""
     tweets = []
     CHUNK = 50  # The size of the BigQuery insertion batch.
@@ -104,7 +104,7 @@ def write_to_bq(pubsub, sub_name, bigquery):
                         tweet = json.loads(res)
                     except Exception, bqe:
                         print bqe
-                    # First do some massaging of the raw data
+                    # First do some massaging of the raw data + sentiment analysis
                     mtweet = utils.cleanup(tweet)
                     # We only want to write tweets to BigQuery; we'll skip
                     # 'delete' and 'limit' information.
@@ -112,6 +112,39 @@ def write_to_bq(pubsub, sub_name, bigquery):
                         continue
                     if 'limit' in mtweet:
                         continue
+
+                    print "Main program - text:",mtweet["text"].encode('utf-8')
+                    print "Main program - lang:",mtweet["lang"].encode('utf-8')
+                    text = mtweet["text"].encode('utf-8')
+                    lang = mtweet["lang"].encode('utf-8')
+
+                    # TODO: Should also filter out the unsupported languages by NLP API
+                    if lang == 'und':
+                        service_request = language.documents().analyzeSentiment(
+                            body={
+                                'document': {
+                                'type': 'PLAIN_TEXT',
+                                'content': text
+                                },
+                                'encodingType': 'UTF8'
+                            })
+                    else:
+                        service_request = language.documents().analyzeSentiment(
+                            body={
+                                'document': {
+                                'type': 'PLAIN_TEXT',
+                                'content': text,
+                                'language': lang
+                                },
+                                'encodingType': 'UTF8'
+                            })
+
+                    response = service_request.execute()
+                    print "NLP result - sentiment score:",response['documentSentiment']['score']
+                    print "NLP result - sentiment magnitude:",response['documentSentiment']['magnitude']
+                    mtweet['sentiment_score'] = response['documentSentiment']['score']
+                    mtweet['sentiment_magnitude'] = response['documentSentiment']['magnitude']
+
                     tweets.append(mtweet)
             else:
                 # pause before checking again
@@ -134,10 +167,11 @@ if __name__ == '__main__':
     credentials = utils.get_credentials()
     bigquery = utils.create_bigquery_client(credentials)
     pubsub = utils.create_pubsub_client(credentials)
+    language = utils.create_nlp_client(credentials)
     try:
         # TODO: check if subscription exists first
         subscription = create_subscription(pubsub, PROJECT_ID, sub_name)
     except Exception, e:
         print e
-    write_to_bq(pubsub, sub_name, bigquery)
+    write_to_bq(language, pubsub, sub_name, bigquery)
     print 'exited write loop'

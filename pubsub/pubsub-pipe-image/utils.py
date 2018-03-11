@@ -27,7 +27,8 @@ import httplib2
 from oauth2client.client import GoogleCredentials
 
 SCOPES = ['https://www.googleapis.com/auth/bigquery',
-          'https://www.googleapis.com/auth/pubsub']
+          'https://www.googleapis.com/auth/pubsub',
+          'https://www.googleapis.com/auth/cloud-language']
 NUM_RETRIES = 3
 
 
@@ -53,6 +54,11 @@ def create_pubsub_client(credentials):
     credentials.authorize(http)
     return discovery.build('pubsub', 'v1beta2', http=http)
 
+def create_nlp_client(credentials):
+    """Build the NLP client."""
+    http = httplib2.Http()
+    credentials.authorize(http)
+    return discovery.build('language', 'v1', http=http)
 
 def flatten(lst):
     """Helper function used to massage the raw tweet data."""
@@ -69,12 +75,22 @@ def cleanup(data):
     """Do some data massaging."""
     if isinstance(data, dict):
         newdict = {}
+        # text = None
+        # lang = None
         for k, v in data.items():
             if (k == 'coordinates') and isinstance(v, list):
                 # flatten list
                 newdict[k] = list(flatten(v))
             elif k == 'created_at' and v:
                 newdict[k] = str(dateutil.parser.parse(v))
+            # elif k == 'text' and v:
+            #     text=v.encode('utf-8')
+            #     print "utils in the loop - Text:",text
+            #     newdict[k] = cleanup(client, v)
+            # elif k == 'lang' and v:
+            #     lang=v.encode('utf-8')
+            #     print "utils in the loop - Lang:",lang
+            #     newdict[k] = cleanup(client, v)
             # temporarily, ignore some fields not supported by the
             # current BQ schema.
             # TODO: update BigQuery schema
@@ -107,6 +123,7 @@ def bq_data_insert(bigquery, project_id, dataset, table, tweets):
         rowlist = []
         # Generate the data that will be sent to BigQuery
         for item in tweets:
+            #print "Text before BQ:",item["text"]
             item_row = {"json": item}
             rowlist.append(item_row)
         body = {"rows": rowlist}
