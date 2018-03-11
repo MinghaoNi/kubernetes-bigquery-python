@@ -1690,5 +1690,15 @@
     "name": "lang",
     "type": "STRING",
     "mode": "NULLABLE"
-  }
+  },
+  {
+    "name": "sentiment_score",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "sentiment_magnitude",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  }    
 ]
