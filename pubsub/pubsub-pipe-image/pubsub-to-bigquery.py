@@ -138,7 +138,8 @@ def write_to_bq(language, pubsub, sub_name, bigquery):
                                 },
                                 'encodingType': 'UTF8'
                             })
-                    
+                        
+                    # Making the request to NLP API and appending the sentiment score and magnitude to the tweet
                     try:
                         response = service_request.execute()
                         print "NLP result - sentiment score:",response['documentSentiment']['score']
