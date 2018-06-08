@@ -138,13 +138,16 @@ def write_to_bq(language, pubsub, sub_name, bigquery):
                                 },
                                 'encodingType': 'UTF8'
                             })
-
-                    response = service_request.execute()
-                    print "NLP result - sentiment score:",response['documentSentiment']['score']
-                    print "NLP result - sentiment magnitude:",response['documentSentiment']['magnitude']
-                    mtweet['sentiment_score'] = response['documentSentiment']['score']
-                    mtweet['sentiment_magnitude'] = response['documentSentiment']['magnitude']
-
+                    
+                    try:
+                        response = service_request.execute()
+                        print "NLP result - sentiment score:",response['documentSentiment']['score']
+                        print "NLP result - sentiment magnitude:",response['documentSentiment']['magnitude']
+                        mtweet['sentiment_score'] = response['documentSentiment']['score']
+                        mtweet['sentiment_magnitude'] = response['documentSentiment']['magnitude']
+                    except Exception, e:
+                        print e
+                        print "Unsupported language, skipping the tweet"
                     tweets.append(mtweet)
             else:
                 # pause before checking again
