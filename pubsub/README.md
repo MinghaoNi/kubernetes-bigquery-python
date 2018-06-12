@@ -62,8 +62,8 @@ New Cloud Platform users may be eligible for a [free trial](/free-trial).
 
 To work through this example, you must have a Google Cloud Platform project with
 the required APIs enabled. In the [Cloud Developers Console](https://console.developers.google.com),
-create a new project or choose an existing project, then in the `APIs & auth > APIs` panel,
-enable the BigQuery, Google Compute Engine, PubSub, Google Cloud Storage, and Google Cloud Storage JSON APIs.
+create a new project or choose an existing project, then in the `APIs & Services > Library` panel,
+enable the BigQuery, Cloud Natural Language, Google Compute Engine, PubSub, Google Cloud Storage, and Google Cloud Storage JSON APIs.
 You will be prompted to enable billing if you have not previously done so.
 
 ### Set up the Google Cloud SDK, or use your project's Cloud Shell
@@ -100,11 +100,8 @@ and set it as above if necessary.
 If you haven't already, clone the Github repository for this example:
 
 ```sh
-git clone https://github.com/GoogleCloudPlatform/kubernetes-bigquery-python.git
+git clone hthttps://github.com/ksimir/kubernetes-bigquery-python.git
 ```
-
-(If you prefer, you can
-[download](https://github.com/GoogleCloudPlatform/kubernetes-bigquery-python/archive/master.zip) it instead.)
 
 Then change to the `pubsub` subdirectory of the repo:
 
