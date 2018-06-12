@@ -6,6 +6,7 @@ Copyright (C) 2014 Google Inc.
 This repository contains two related example [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/)
 (GKE) apps that show how to build a 'pipeline' to stream data into BigQuery.
 
+`` Disclaimer: Sentiment analysis feature is only implmented in the PubSub solution. If you are interested in the sentiment analysis feature, please ignore the Redis implmentation. ``
 
 The app in the `pubsub` directory uses [Google Cloud PubSub](https://cloud.google.com/pubsub/docs).
 <!-- Documentation for this example can be found on the Google Cloud Platform site:
