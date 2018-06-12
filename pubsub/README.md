@@ -38,7 +38,7 @@ We won't go into much detail about Kubernetes' features in this tutorial, but se
 The app uses uses PubSub to buffer the data coming in from Twitter and to decouple ingestion from processing.
 One of the Kubernetes app *pods* reads the data from Twitter and publishes it to a PubSub topic.  Other pods subscribe to the PubSub topic, grab data in small batches, and stream it into BigQuery.  The figure below suggests this flow.
 
-<img src="http://amy-jo.storage.googleapis.com/images/k8s_pubsub_tw_bq.png" width="680">
+<img src="https://storage.googleapis.com/twitter-bq/images/twitter-sentiment.png" width="680">
 
 This app can be thought of as a 'workflow' type of app-- it doesn't have a web
 front end (though Kubernetes is great for those types of apps as well).
